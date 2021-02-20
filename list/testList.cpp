@@ -18,7 +18,7 @@ struct TestStruct
 };
 
 typedef lab618::CSingleLinkedList<TestStruct> TestSingleList;
-//typedef lab618::CDualLinkedList<TestStruct> TestList;
+typedef lab618::CDualLinkedList<TestStruct> TestList;
 
 static std::string makeRandomString(int minL = 7, int maxL = 14)
 {
@@ -100,13 +100,14 @@ TEST_CASE("SingleList") {
 
     CHECK(single_list.getSize() == real_list.size());
 
-    for (int i = 0; i < ELEMENTS_COUNT; ++i) {
-      TestStruct ts;
-      generate(&ts);
-      single_list.pushBack(ts);
-      real_list.push_back(ts);
-      single_list.pushFront(ts);
-      real_list.push_front(ts);
+    for (int i = 0; i < ELEMENTS_COUNT; ++i)
+    {
+        TestStruct ts;
+        generate(&ts);
+        single_list.pushBack(ts);
+        real_list.push_back(ts);
+        single_list.pushFront(ts);
+        real_list.push_front(ts);
     }
 
     while (!real_list.empty())
@@ -117,4 +118,147 @@ TEST_CASE("SingleList") {
     }
 
     CHECK(single_list.getSize() == 0);
+}
+
+TEST_CASE("DualLinkedList simple test") {
+  srand(time(0));
+
+  TestList list;
+  for (int i = 0; i < ELEMENTS_COUNT; ++i)
+  {
+      TestStruct ts;
+      generate(&ts);
+      list.pushBack(ts);
+  }
+
+  for (int i = 0; i < ELEMENTS_COUNT; ++i)
+  {
+      TestStruct ts;
+      generate(&ts);
+      list.pushFront(ts);
+  }
+
+  CHECK(list.getSize() == ELEMENTS_COUNT * 2);
+
+  for (int i = 0; i < ELEMENTS_COUNT; ++i)
+  {
+      if (i % 2 == 0)
+      {
+          list.popFront();
+      }
+      else
+      {
+          list.popBack();
+      }
+  }
+
+  CHECK(list.getSize() == ELEMENTS_COUNT);
+
+  for (TestList::CIterator it = list.begin(); it.isValid(); ++it)
+  {
+      it.getLeaf();
+      TestStruct ts = *it;
+      list.erase(it);
+  }
+
+  CHECK(list.getSize() == 0);
+}
+
+TEST_CASE("DualLinkedList")
+{
+    srand(time(0));
+
+    TestList list;
+    std::list<TestStruct> real_list;
+    for (int i = 0; i < ELEMENTS_COUNT; ++i)
+    {
+        TestStruct ts;
+        generate(&ts);
+        list.pushBack(ts);
+        real_list.push_back(ts);
+    }
+
+    CHECK(list.getSize() == real_list.size());
+
+    int nErase = 10000;
+    for (int i = 0; i < nErase; ++i)
+    {
+        int number = rand() % (ELEMENTS_COUNT - i);
+        if (i + 1 == nErase)
+        {
+            number = ELEMENTS_COUNT - i - 1;
+        }
+
+        if (i % 2 == 0)
+        {
+            auto listIter = list.begin();
+            auto realListIter = real_list.begin();
+            for (int j = 0; j < number; ++j) {
+                ++listIter;
+                ++realListIter;
+            }
+            if (i % 4 == 0)
+            {
+                list.eraseAndNext(listIter);
+                real_list.erase(realListIter);
+            }
+            else
+            {
+                list.erase(listIter);
+                real_list.erase(realListIter);
+            }
+        }
+        else
+        {
+            auto listIter = list.end();
+            auto realListIter = real_list.end();
+            for (int j = 0; j < number; ++j) {
+                --listIter;
+                --realListIter;
+            }
+            if (i % 4 == 1)
+            {
+                list.eraseAndNext(listIter);
+                real_list.erase(realListIter);
+            }
+            else
+            {
+                list.erase(listIter);
+                real_list.erase(realListIter);
+            }
+        }
+    }
+
+    CHECK(list.getSize() == real_list.size());
+
+    for (int i = 0; i < ELEMENTS_COUNT; ++i)
+    {
+        TestStruct ts;
+        generate(&ts);
+        list.pushBack(ts);
+        real_list.push_back(ts);
+        list.pushFront(ts);
+        real_list.push_front(ts);
+    }
+
+    size_t listSize = real_list.size();
+    for (size_t i = 0; i < listSize; ++i)
+    {
+        if (i % 2 == 0)
+        {
+            TestStruct realListTs = real_list.front();
+            real_list.pop_front();
+            TestStruct listTs = list.popFront();
+            CHECK(realListTs.key == listTs.key);
+        }
+        else
+        {
+            TestStruct realListTs = real_list.back();
+            real_list.pop_back();
+            TestStruct listTs = list.popBack();
+            CHECK(realListTs.key == listTs.key);
+        }
+    }
+
+    CHECK(list.getSize() == 0);
 }
