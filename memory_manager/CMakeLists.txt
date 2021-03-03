@@ -1,0 +1,6 @@
+add_library(memory_manager memory_manager.h)
+set_target_properties(memory_manager PROPERTIES LINKER_LANGUAGE CXX)
+
+add_executable(test_memory_manager test_memory_manager.cpp)
+
+target_link_libraries(test_memory_manager memory_manager)
