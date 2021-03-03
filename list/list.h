@@ -293,6 +293,10 @@ namespace lab618
 
             CIterator& operator = (const CIterator&  src)
             {
+                m_pCurrent = src.m_pCurrent;
+                m_pBegin = src.m_pBegin;
+                m_pEnd = src.m_pEnd;
+                return *this;
             }
 
             bool operator != (const CIterator&  it) const
@@ -550,9 +554,7 @@ namespace lab618
 
         CIterator end()
         {
-            CIterator result;
-            result.setLeafPostEnd(m_pEnd);
-            return result;
+            return CIterator(m_pEnd);
         }
 
     private:

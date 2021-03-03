@@ -212,7 +212,8 @@ TEST_CASE("DualLinkedList")
         {
             auto listIter = list.end();
             auto realListIter = real_list.end();
-            for (int j = 0; j < number; ++j) {
+            --realListIter;
+            for (int j = 1; j < number; ++j) {
                 --listIter;
                 --realListIter;
             }
@@ -258,6 +259,25 @@ TEST_CASE("DualLinkedList")
             TestStruct listTs = list.popBack();
             CHECK(realListTs.key == listTs.key);
         }
+    }
+
+    CHECK(list.getSize() == 0);
+}
+
+TEST_CASE ("DualLinkedList iterate")
+{
+    TestList list;
+    for (int i = 0; i < ELEMENTS_COUNT; ++i)
+    {
+        TestStruct ts;
+        generate(&ts);
+        list.pushBack(ts);
+    }
+
+    for (TestList::CIterator it = list.end(); it.isValid(); --it)
+    {
+        TestStruct ts = *it;
+        list.eraseAndNext(it);
     }
 
     CHECK(list.getSize() == 0);
