@@ -13,8 +13,10 @@ project(zhukov_pavel)
 include_directories(
 	memory_manager
 	list
+	heap_sort
 	thirdparty
 )
 
 add_subdirectory(list)
 add_subdirectory(memory_manager)
+add_subdirectory(heap_sort)
