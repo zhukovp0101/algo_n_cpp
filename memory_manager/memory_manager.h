@@ -154,7 +154,7 @@ namespace lab618
         // Освободить память блока данных. Применяется в clear
         void deleteBlock(block* p)
         {
-            bool isFree[m_blkSize];
+            bool* isFree = new bool[m_blkSize];
             for (int i = 0; i < m_blkSize; ++i)
             {
                 isFree[i] = false;
@@ -176,6 +176,7 @@ namespace lab618
             }
 
             free(p->pdata);
+            delete[] isFree;
         }
 
         // Размер блока
