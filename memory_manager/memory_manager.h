@@ -42,7 +42,7 @@ namespace lab618
         {
         public:
             CException() {}
-            const char* what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_NOTHROW override
+            const char* what() const override
             {
                 return "It is impossible to clear the data because the destructor was not called !";
             }
